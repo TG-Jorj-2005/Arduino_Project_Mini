@@ -1,98 +1,102 @@
-## LED_LCD — Cronometru de Urgență (LCD + Servo + Buzzer)
+# LED_LCD — Emergency Timer (LCD + Servo + Buzzer)
 
-Proiect care numără timpul scurs de la ultimul reset și declanșează o alarmă 
-(sunet de sirenă + mișcare de servomotor) dacă timpul depășește un prag critic — 
-util ca simulare pentru un sistem de avertizare/urgență cu timp limită.
+A project that measures the time elapsed since the last reset and triggers an alarm (siren sound + servo motor movement) if the elapsed time exceeds a critical threshold. It can be used as a simulation of an emergency/warning system with a time limit.
 
-### Componente
-- Arduino Uno
-- LCD 16x2 (mod paralel, fără I2C)
-- Servomotor
-- Buzzer pasiv
-- Buton (reset)
+### Components
 
-### Conexiuni
+* Arduino Uno
+* 16x2 LCD (parallel interface, without I2C)
+* Servo motor
+* Passive buzzer
+* Push button (reset)
 
-| Componentă        | Pin Arduino |
-|--------------------|-------------|
+### Connections
+
+| Component          | Arduino Pin        |
+| ------------------ | ------------------ |
 | LCD (RS, E, D4-D7) | 12, 11, 5, 4, 3, 2 |
-| Buton Reset        | D13         |
-| Buzzer             | A0          |
-| Servo              | D9          |
+| Reset Button       | D13                |
+| Buzzer             | A0                 |
+| Servo              | D9                 |
 
-### Funcționare
-- La pornire, cronometrul începe să numere secundele scurse (`millis()`).
-- Ecranul LCD afișează timpul scurs în timp real, în secunde.
-- Dacă timpul depășește **10 secunde** fără reset, se declanșează starea de "URGENȚĂ":
-  - Buzzer-ul redă o sirenă (frecvență crescătoare/descrescătoare între 500-1500 Hz).
-  - Servomotorul se mișcă continuu între 0° și 180°, ca semnal vizual de alarmă.
-  - LCD-ul afișează mesajul "URGENTA!!!".
-- Apăsarea butonului de reset oprește alarma, resetează cronometrul la 0 și afișează un mesaj de confirmare.
+### How It Works
 
-### Biblioteci necesare
-- `LiquidCrystal` (inclusă în Arduino IDE)
-- `Servo` (inclusă în Arduino IDE)
+* When the system starts, the timer begins counting the elapsed seconds using `millis()`.
+* The LCD displays the elapsed time in real time, in seconds.
+* If the elapsed time exceeds **10 seconds** without a reset, the system enters **"EMERGENCY"** mode:
 
-### Notă
-Pragul de 10 secunde e setat scurt pentru testare rapidă — pentru o utilizare reală, 
-mărește valoarea din `if (elapsedTime > 10)` la un interval potrivit scenariului tău.
+  * The buzzer plays a siren sound with an increasing/decreasing frequency between 500–1500 Hz.
+  * The servo motor continuously moves between 0° and 180° as a visual alarm signal.
+  * The LCD displays the message **"EMERGENCY!!!"**.
+* Pressing the reset button stops the alarm, resets the timer to 0, and displays a confirmation message.
 
+### Required Libraries
 
+* `LiquidCrystal` — included with the Arduino IDE
+* `Servo` — included with the Arduino IDE
 
+### Note
 
+The 10-second threshold is intentionally short for quick testing. For real-world use, increase the value in `if (elapsedTime > 10)` to an appropriate time interval for your specific scenario.
 
+---
 
+# DC Motor Control — Speed and Direction (Potentiometer + OLED)
 
-## Control Motor DC — Viteză și Direcție (Potențiometru + OLED)
+A project that controls a DC motor using an **L293D motor driver**, with adjustable speed controlled by a potentiometer and direction controlled by two push buttons. The current motor status is displayed live on an I2C OLED display.
 
-Proiect care controlează un motor DC folosind un driver de motor L293D, 
-cu viteză reglabilă din potențiometru și direcție comandată din două butoane, 
-iar starea curentă e afișată live pe un ecran OLED I2C.
+### Components
 
-### Componente
-- Arduino Uno
-- Driver de motor L293D
-- Motor DC
-- Potențiometru (control viteză)
-- 2 butoane (înainte / înapoi)
-- OLED 0.96" SSD1306 (I2C)
+* Arduino Uno
+* L293D motor driver
+* DC motor
+* Potentiometer (speed control)
+* 2 push buttons (forward / reverse)
+* 0.96" SSD1306 OLED display (I2C)
 
-### Conexiuni
+### Connections
 
-| Componentă      | Pin Arduino |
-|------------------|-------------|
-| Potențiometru    | A0          |
-| ENA (driver)     | D5 (PWM)    |
-| IN1 (driver)     | D7          |
-| IN2 (driver)     | D8          |
-| Buton înainte    | D2          |
-| Buton înapoi     | D3          |
-| OLED SDA/SCL     | A4 / A5     |
+| Component      | Arduino Pin |
+| -------------- | ----------- |
+| Potentiometer  | A0          |
+| ENA (driver)   | D5 (PWM)    |
+| IN1 (driver)   | D7          |
+| IN2 (driver)   | D8          |
+| Forward Button | D2          |
+| Reverse Button | D3          |
+| OLED SDA/SCL   | A4 / A5     |
 
-### Funcționare
-- Potențiometrul controlează viteza motorului (PWM 0-255) prin `analogWrite` pe pinul ENA.
-- Fiecare buton **comută** (toggle) pornit/oprit pentru sensul respectiv — nu trebuie ținut apăsat.
-- Apăsarea unui buton dezactivează automat sensul opus, ca motorul să nu primească comenzi contradictorii.
-- Debounce software (50ms) evită citiri false la apăsarea butoanelor.
-- Ecranul OLED afișează în timp real viteza curentă și sensul de rotație (Înainte / Înapoi / Oprit).
+### How It Works
 
-### Biblioteci necesare
-- `Adafruit_GFX`
-- `Adafruit_SSD1306`
+* The potentiometer controls the motor speed using PWM values from 0–255 through `analogWrite()` on the ENA pin.
+* Each button acts as a **toggle**, turning the corresponding direction ON or OFF. The button does not need to be held down.
+* Pressing one direction button automatically disables the opposite direction, preventing contradictory motor commands.
+* Software debounce with a **50 ms** delay/filter prevents false button readings.
+* The OLED display shows the current motor speed and rotation direction in real time:
 
+  * **Forward**
+  * **Reverse**
+  * **Stopped**
+
+### Required Libraries
+
+* `Adafruit_GFX`
+* `Adafruit_SSD1306`
+
+---
 
 # 🌡️ ESP32 Temperature Monitoring System
 
-A simple temperature monitoring system built with an **ESP32**.
+A simple temperature monitoring system built using an **ESP32**.
 
 ## 🚀 Features
 
-- 🌡️ Reads temperature using a **DS18B20**
-- 📺 Displays the temperature on an **ST7735 TFT display**
-- 🟢 Green LED indicates normal temperature
-- 🔴 Red LED indicates high temperature
-- 🔊 Buzzer alarm activates when the temperature is too high
-- 💻 Temperature is also displayed in the Serial Monitor
+* 🌡️ Measures temperature using a **DS18B20** temperature sensor
+* 📺 Displays the temperature on an **ST7735 TFT display**
+* 🟢 Green LED indicates a normal temperature
+* 🔴 Red LED indicates a high temperature
+* 🔊 Buzzer alarm activates when the temperature is too high
+* 💻 Temperature is also displayed in the Serial Monitor
 
 ---
 
@@ -102,50 +106,50 @@ A simple temperature monitoring system built with an **ESP32**.
 
 When the temperature is **35°C or below**:
 
-- Green LED → **ON**
-- Red LED → **OFF**
-- Display → `TEMP OK`
-- Status → `NORMAL`
+* Green LED → **ON**
+* Red LED → **OFF**
+* Display → `TEMP OK`
+* Status → **NORMAL**
 
 ### 🔴 Emergency Mode
 
 When the temperature is **above 35°C**:
 
-- Red LED → **ON**
-- Green LED → **OFF**
-- Display → `URGENTA!`
-- Buzzer → **Siren alarm**
+* Red LED → **ON**
+* Green LED → **OFF**
+* Display → `EMERGENCY!`
+* Buzzer → **Siren Alarm**
 
 ---
 
 ## 🔧 Components
 
-- ESP32
-- DS18B20 Temperature Sensor
-- ST7735 TFT Display
-- 🔴 Red LED
-- 🟢 Green LED
-- 🔊 Buzzer
+* ESP32
+* DS18B20 Temperature Sensor
+* ST7735 TFT Display
+* 🔴 Red LED
+* 🟢 Green LED
+* 🔊 Buzzer
 
 ---
 
 ## 🔌 Pin Configuration
 
 | Component | GPIO |
-|-----------|------|
-| DS18B20 | 4 |
-| Red LED | 19 |
-| Green LED | 26 |
-| Buzzer | 25 |
-| TFT CS | 5 |
-| TFT DC | 2 |
-| TFT RST | 15 |
-| TFT SCLK | 18 |
-| TFT MOSI | 23 |
+| --------- | ---- |
+| DS18B20   | 4    |
+| Red LED   | 19   |
+| Green LED | 26   |
+| Buzzer    | 25   |
+| TFT CS    | 5    |
+| TFT DC    | 2    |
+| TFT RST   | 15   |
+| TFT SCLK  | 18   |
+| TFT MOSI  | 23   |
 
 ---
 
-## 📚 Libraries
+## 📚 Required Libraries
 
 ```text
 Adafruit GFX
@@ -153,3 +157,4 @@ Adafruit ST7735
 SPI
 OneWire
 DallasTemperature
+```
